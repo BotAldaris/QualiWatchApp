@@ -1,0 +1,12 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .entrada {
+        @apply input input-bordered input-primary w-full;
+    }
+    .botao {
+        @apply btn btn-outline rounded-full;
+    }
+}

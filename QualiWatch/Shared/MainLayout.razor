@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+<div data-theme="@(TemaEscuro ? "dark":"light")">
+    <div class="min-h-screen">
+
+        <main class="pb-16">
+            <article>
+                @Body
+            </article>
+        </main>
+        <div>
+            <NavMenu />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private bool TemaEscuro;
+    [Inject]
+    private UserConfig UserConfig { get; set; }
+    protected override void OnInitialized()
+    {
+        if (!(Preferences.Default.ContainsKey("tema")))
+        {
+            UserConfig.SalvarTema(false);
+
+        }
+        else
+        {
+            UserConfig.Url = Preferences.Default.Get("url","");
+            UserConfig.SalvarTema(Preferences.Default.Get("tema", false));
+
+        }
+        TemaEscuro = UserConfig.Tema;
+        UserConfig.OnThemeChanged += UpdateTheme;
+    }
+    private void UpdateTheme()
+    {
+        TemaEscuro = UserConfig.Tema;
+        StateHasChanged();
+    }
+}

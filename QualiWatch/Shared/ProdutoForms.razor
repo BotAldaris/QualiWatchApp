@@ -1,0 +1,25 @@
+﻿<div>
+            <label>*Nome: </label>
+            <div>
+                <InputText class="entrada" placeholder="Nome" @bind-Value=Produto.Nome />
+                <ValidationMessage For="() => Produto.Nome" />
+            </div>
+        </div>
+        <div>
+            <label>Lote: </label>
+            <div>
+                <InputText class="entrada" DisplayName="Lote" placeholder="Lote" @bind-Value=Produto.Lote />
+                <ValidationMessage For="() => Produto.Lote" />
+            </div>
+        </div>
+        <div>
+            <label>*Validade: </label>
+            <div>
+        <input class="entrada max-w-xs" @bind-value=Produto.Validade type="date" />
+                <ValidationMessage For="() => Produto.Validade" />
+            </div>
+        </div>
+@code {
+    [Parameter, EditorRequired]
+    public required Produto Produto { get; set; }
+}

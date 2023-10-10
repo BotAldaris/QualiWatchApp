@@ -1,0 +1,86 @@
+﻿@page "/produto/adicionar"
+@inject UserConfig UserConfig
+@inject IJSRuntime JSRuntime
+@inject NavigationManager navManager
+<ProdutosFormsHeader/>
+<div class="flex flex-col items-center justify-center min-h-screen gap-4">
+    <EditForm EditContext=editContext OnValidSubmit=Salvar class="flex flex-col sm:w-4/5 md:w-3/5 lg:md-2/5 align-items-center justify-center gap-4">
+        <ProdutoForms Produto=Produto/>
+        <button class="botao btn-secondary" type="submit">Salvar</button>
+    </EditForm>
+    <CameraImagem/>
+   
+</div>
+@code {
+    Produto Produto => UserConfig.Produto;
+    bool isError = true;
+#nullable enable
+    EditContext? editContext;
+#nullable disable
+
+    protected override void OnInitialized()
+    {
+        editContext = new(Produto);
+        editContext.OnFieldChanged += HandleFieldChanged;
+    }
+    private async Task Salvar()
+    {
+        if(Produto.Id != 0)
+        {
+            await AtualizarProduto();
+        }
+        else
+        {
+            await AdicionarProduto();
+        }
+    }
+    private async Task AdicionarProduto()
+    {
+        try
+        {
+            Produto produto = await ProdutoManager.Add(Produto.Nome, Produto.Lote, Produto.Validade);
+            if(Produto.Id != 0)
+            {
+                await JSRuntime.InvokeVoidAsync("showAlert", "Erro ao Adiocnar o Produto!");
+            }
+            else
+            {
+                UserConfig.Produto = new();
+                navManager.NavigateTo("/");
+            }
+        }
+        catch
+        {
+            await JSRuntime.InvokeVoidAsync("showAlert", "Erro ao Adicionar o Produto!");
+        }
+
+    }
+    private async Task AtualizarProduto()
+    {
+        try
+        {
+            await ProdutoManager.Update(Produto);
+            UserConfig.Produto = new();
+            navManager.NavigateTo("/");
+        }
+        catch
+        {
+            await JSRuntime.InvokeVoidAsync("showAlert", "Erro ao Atualizar o Produto!");
+
+        }
+
+    }
+#nullable enable
+    void HandleFieldChanged(object? sender, FieldChangedEventArgs e)
+    {
+        isError = editContext?.Validate() is false;
+        StateHasChanged();
+    }
+#nullable disable
+
+    public void Dispose()
+    {
+        if (editContext is null) return;
+        editContext.OnFieldChanged -= HandleFieldChanged;
+    }
+}

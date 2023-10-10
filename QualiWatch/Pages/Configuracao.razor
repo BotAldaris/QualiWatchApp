@@ -1,0 +1,51 @@
+﻿@page "/configuracao"
+@inject IJSRuntime JSRuntime
+
+<div class="grid place-items-center min-h-4/5">
+    <h1 class="text-2xl">Configuração</h1>
+    <div class=" flex flex-col items-center gap">
+        <p>Tema: @(TemaEscuro ? "Escuro" : "Claro")</p>
+    <input type="checkbox" class="toggle" checked="@TemaEscuro" @onchange=TrocarTema />
+    </div>
+    <form class="flex flex-col gap-2 w-3/5 " onsubmit=@SalvarUrl>
+        <div class=" flex flex-col">
+            <label for="url">Url</label>
+            <input class="entrada" id="url" placeholder="Url"type="text" @bind-value=UrlText/>
+        </div>
+        <button class="botao">Enviar</button>
+    </form>
+</div>
+
+@code {
+    private bool TemaEscuro;
+    private string UrlText;
+    private bool Pref;
+    [Inject]
+    private UserConfig UserConfig { get; set; }
+    protected override void OnInitialized()
+    {
+        Pref = Preferences.Default.ContainsKey("tema");
+        if (!(Preferences.Default.ContainsKey("tema")))
+        {
+            UserConfig.SalvarTema(false);
+
+        }
+        TemaEscuro = UserConfig.Tema;
+        UrlText = UserConfig.Url;
+        UserConfig.OnThemeChanged += UpdateTheme;
+    }
+    private void UpdateTheme()
+    {
+        TemaEscuro = UserConfig.Tema;
+    }
+    private void TrocarTema()
+    {
+        UserConfig.SalvarTema(!TemaEscuro);
+        Pref = Preferences.Default.ContainsKey("tema");
+    }
+    public async Task SalvarUrl()
+    {
+        UserConfig.SalvarUrl(UrlText);
+        await JSRuntime.InvokeVoidAsync("showAlert", "URL salva comm sucesso!");
+    }
+}
