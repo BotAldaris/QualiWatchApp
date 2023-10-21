@@ -6,7 +6,10 @@ module.exports = {
       extend: {
           colors: {
               "superfice-dark": "#272329",
-          }
+          },
+          screens: {
+              '3xl': '1601px',
+          },
       },
   },
     plugins: [require("daisyui")],

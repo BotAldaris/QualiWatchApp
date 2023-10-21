@@ -3,12 +3,11 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager navManager
 <ProdutosFormsHeader/>
-<div class="flex flex-col items-center justify-center min-h-screen gap-4">
+<div class="flex flex-col items-center justify-center gap-4">
     <EditForm EditContext=editContext OnValidSubmit=Salvar class="flex flex-col sm:w-4/5 md:w-3/5 lg:md-2/5 align-items-center justify-center gap-4">
         <ProdutoForms Produto=Produto/>
         <button class="botao btn-secondary" type="submit">Salvar</button>
     </EditForm>
-    <CameraImagem/>
    
 </div>
 @code {

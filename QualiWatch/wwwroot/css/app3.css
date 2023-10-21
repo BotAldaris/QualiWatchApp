@@ -2427,3 +2427,9 @@ html {
     width: 2rem;
   }
 }
+
+@media (min-width: 1601px) {
+  .\33xl\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
